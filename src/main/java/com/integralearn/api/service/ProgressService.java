@@ -17,6 +17,7 @@ public class ProgressService {
     private JdbcTemplate jdbc;
 
     public List<ProgressRowDto> progressForUser(String username) {
+        System.out.println("=== DEBUG: Buscando progreso para usuario: " + username + " ===");
         String sql = """
           SELECT user_id, username, scenario_id, scenario_code, best_score, total_score,
                  attempts_count, total_time_seconds, last_activity_at
@@ -24,7 +25,15 @@ public class ProgressService {
           WHERE username = ?
           ORDER BY scenario_code
         """;
-        return jdbc.query(sql, (rs, i) -> mapProgress(rs), username);
+        try {
+            List<ProgressRowDto> result = jdbc.query(sql, (rs, i) -> mapProgress(rs), username);
+            System.out.println("=== DEBUG: Encontrados " + result.size() + " registros de progreso ===");
+            return result;
+        } catch (Exception e) {
+            System.err.println("=== ERROR en progressForUser ===");
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public List<LeaderboardRowDto> leaderboard(String scenarioCode) {

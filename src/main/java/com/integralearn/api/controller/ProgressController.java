@@ -18,11 +18,18 @@ public class ProgressController {
 
     @GetMapping("/me")
     public List<ProgressRowDto> myProgress(Authentication auth) {
-        return progress.progressForUser(auth.getName());
+        // Temporal: usar usuario específico para pruebas
+        String username = (auth != null && auth.getName() != null) ? auth.getName() : "alex@gmail.com";
+        return progress.progressForUser(username);
     }
 
     @GetMapping("/leaderboard")
     public List<LeaderboardRowDto> leaderboard(@RequestParam("scenario") String scenarioCode) {
         return progress.leaderboard(scenarioCode);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "Progress controller is working!";
     }
 }
